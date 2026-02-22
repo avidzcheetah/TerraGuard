@@ -98,7 +98,15 @@ function buildSimulatedHistory(): { chart: ChartPoint[]; log: ActivityEntry[] } 
 }
 
 // ─── Chart Modal ──────────────────────────────────────────────────────────────
-function ChartModal({ isOpen, onClose, title, data, dataKey, color }) {
+interface ChartModalProps {
+  isOpen: boolean
+  onClose: () => void
+  title: string
+  data: ChartPoint[]
+  dataKey: string
+  color: string
+}
+function ChartModal({ isOpen, onClose, title, data, dataKey, color }: ChartModalProps) {
   if (!isOpen) return null
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
