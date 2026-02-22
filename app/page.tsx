@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { AlertTriangle, Bluetooth, BluetoothOff, Zap, Activity, Droplets, TrendingUp, Maximize2, X, Loader2, Radio, CheckCircle2 } from 'lucide-react'
+import { AlertTriangle, Bluetooth, BluetoothOff, Zap, Activity, Droplets, TrendingUp, Maximize2, X, Loader2, Radio, CheckCircle2, Brain, Gauge } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { loadModel, predictRisk, isModelLoaded, type MLPrediction } from '@/lib/ml-inference'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ConnectionState = 'disconnected' | 'scanning' | 'connecting' | 'connected' | 'error'
@@ -332,6 +333,18 @@ export default function Dashboard() {
 
   const isConnected = connectionState === 'connected'
 
+  // ── ML inference state ────────────────────────────────────────────────────
+  const [mlReady, setMlReady]     = useState(false)
+  const [mlLoading, setMlLoading] = useState(true)
+  const [mlPred, setMlPred]       = useState<MLPrediction | null>(null)
+
+  // Load model weights once on mount
+  useEffect(() => {
+    loadModel()
+      .then(() => { setMlReady(true); setMlLoading(false) })
+      .catch(() => { setMlLoading(false) })
+  }, [])
+
   // ── Apply a new sensor reading to state ───────────────────────────────────
   const applyReading = useCallback((r: SensorReading) => {
     const time = nowTimeStr()
@@ -347,6 +360,19 @@ export default function Dashboard() {
       return [entry, ...prev].slice(0, 20)
     })
   }, [])
+
+  // ── Run ML prediction whenever sensor values or model readiness change ────
+  useEffect(() => {
+    if (!isConnected || !mlReady || !isModelLoaded()) {
+      setMlPred(null)
+      return
+    }
+    try {
+      setMlPred(predictRisk(latest.Mn, latest.Tn, latest.Vn))
+    } catch (_) {
+      setMlPred(null)
+    }
+  }, [latest, isConnected, mlReady])
 
   // ── Reset to empty state when disconnected ───────────────────────────────
   useEffect(() => {
@@ -796,19 +822,222 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* ── AI Risk Prediction (placeholder) ────────────────────────────── */}
+        {/* ── AI Risk Prediction ─────────────────────────────────────────────── */}
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />AI Risk Prediction
+              <Brain className={`w-5 h-5 ${isConnected && mlReady ? 'text-violet-400' : 'text-muted-foreground'}`} />
+              AI Risk Prediction
+              {mlReady && (
+                <Badge variant="outline" className="ml-2 text-[10px] font-mono border-violet-700/50 text-violet-400 bg-violet-900/20">
+                  MLP {mlPred?.meta.modelVersion ?? ''}
+                </Badge>
+              )}
             </CardTitle>
-            <CardDescription>Machine learning-based landslide probability forecast</CardDescription>
+            <CardDescription>Neural network landslide probability — 3-layer MLP trained on {mlPred?.meta.training.n_samples?.toLocaleString() ?? '10 000'} samples</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="py-12 text-center">
-              <p className="text-lg text-muted-foreground">Prediction module will be added in a future update</p>
-              <p className="text-sm text-muted-foreground mt-4">Placeholder for probability and confidence level display</p>
-            </div>
+            {/* ── Disconnected / model loading state ── */}
+            {(!isConnected || !mlReady) ? (
+              <div className="py-10 flex flex-col items-center gap-4 text-muted-foreground">
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-full border border-violet-500/20 animate-ping" style={{ animationDuration: '2s' }} />
+                  <div className="w-14 h-14 rounded-full border border-violet-500/30 flex items-center justify-center">
+                    {mlLoading
+                      ? <Loader2 className="w-6 h-6 animate-spin text-violet-400/60" />
+                      : <Brain className="w-6 h-6 text-muted-foreground/40" />
+                    }
+                  </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-medium">
+                    {mlLoading ? 'Loading neural network…' : 'Awaiting sensor connection'}
+                  </p>
+                  <p className="text-xs opacity-50 mt-1">
+                    {mlLoading ? 'Fetching model weights from /model_weights.json' : 'Connect HC-05 to enable live ML predictions'}
+                  </p>
+                </div>
+              </div>
+            ) : mlPred === null ? (
+              <div className="py-8 text-center text-muted-foreground text-sm">Waiting for first reading…</div>
+            ) : (
+              <div className="space-y-6">
+                {/* ── Top row: Gauge + Contributions ───────────── */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                  {/* Arc Gauge */}
+                  <div className="flex flex-col items-center gap-3">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">ML Risk Probability</p>
+                    <div className="relative w-48 h-28 select-none">
+                      {/* SVG arc gauge */}
+                      <svg viewBox="0 0 200 110" className="w-full h-full">
+                        {/* Background arc */}
+                        <path
+                          d="M 20 100 A 80 80 0 0 1 180 100"
+                          fill="none" stroke="hsl(240,10%,18%)" strokeWidth="16" strokeLinecap="round"
+                        />
+                        {/* Value arc — strokeDasharray trick for partial fill */}
+                        {(() => {
+                          const score = mlPred.riskScore
+                          const arcLen = 251.2  // π × r (r=80, half-circle)
+                          const filled = score * arcLen
+                          const color = score >= 0.6 ? 'hsl(0,72%,51%)' : score >= 0.3 ? 'hsl(38,92%,50%)' : 'hsl(142,71%,45%)'
+                          return (
+                            <path
+                              d="M 20 100 A 80 80 0 0 1 180 100"
+                              fill="none" stroke={color} strokeWidth="16" strokeLinecap="round"
+                              strokeDasharray={`${filled} ${arcLen - filled + 0.1}`}
+                              strokeDashoffset="0"
+                              style={{ transition: 'stroke-dasharray 0.6s ease, stroke 0.4s ease' }}
+                            />
+                          )
+                        })()}
+                        {/* Needle */}
+                        {(() => {
+                          const angle = mlPred.riskScore * 180 - 180  // -180° to 0°
+                          const rad = (angle * Math.PI) / 180
+                          const nx = 100 + 65 * Math.cos(rad)
+                          const ny = 100 + 65 * Math.sin(rad)
+                          return <line x1="100" y1="100" x2={nx.toFixed(1)} y2={ny.toFixed(1)}
+                            stroke="hsl(240,5%,85%)" strokeWidth="2.5" strokeLinecap="round" />
+                        })()}
+                        {/* Center dot */}
+                        <circle cx="100" cy="100" r="5" fill="hsl(240,5%,85%)" />
+                        {/* Score text */}
+                        <text x="100" y="88" textAnchor="middle" fill="hsl(240,5%,95%)" fontSize="20" fontWeight="bold" fontFamily="monospace">
+                          {(mlPred.riskScore * 100).toFixed(1)}%
+                        </text>
+                        {/* Labels */}
+                        <text x="18" y="115" fill="hsl(142,71%,45%)" fontSize="9" fontFamily="monospace">LOW</text>
+                        <text x="82" y="25" fill="hsl(38,92%,50%)" fontSize="9" fontFamily="monospace">MED</text>
+                        <text x="166" y="115" fill="hsl(0,72%,51%)" fontSize="9" fontFamily="monospace">HIGH</text>
+                      </svg>
+                      {/* Class badge below gauge */}
+                      <div className="absolute bottom-0 left-0 right-0 flex justify-center">
+                        <span className={`text-xs font-bold px-3 py-0.5 rounded-full ${
+                          mlPred.riskClass === 'HIGH'   ? 'bg-red-900/60 text-red-200' :
+                          mlPred.riskClass === 'MEDIUM' ? 'bg-orange-900/60 text-orange-200' :
+                                                          'bg-green-900/60 text-green-200'
+                        }`}>{mlPred.riskClass}</span>
+                      </div>
+                    </div>
+
+                    {/* Confidence indicator */}
+                    <div className="w-full max-w-[200px] space-y-1">
+                      <div className="flex justify-between text-[10px] text-muted-foreground">
+                        <span>Prediction Confidence</span>
+                        <span className="font-mono">{(mlPred.confidence * 100).toFixed(0)}%</span>
+                      </div>
+                      <div className="w-full bg-secondary/50 rounded-full h-1.5">
+                        <div
+                          className="bg-violet-500 h-1.5 rounded-full transition-all duration-500"
+                          style={{ width: `${mlPred.confidence * 100}%` }}
+                        />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground text-right">
+                        {mlPred.confidence >= 0.7 ? '★ High' : mlPred.confidence >= 0.4 ? '◐ Moderate' : '○ Low'} confidence
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Factor Contributions */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Feature Attribution</p>
+                      <span className="text-[10px] text-muted-foreground/60 font-mono">
+                        {(mlPred.contributions.moisture + mlPred.contributions.tilt + mlPred.contributions.vibration) > 1e-6
+                          ? 'input × ∇ risk'
+                          : '|∇ risk| sensitivity'}
+                      </span>
+                    </div>
+                    {(() => {
+                      const { moisture, tilt, vibration } = mlPred.contributions
+                      const allZero = moisture === 0 && tilt === 0 && vibration === 0
+                      if (allZero) {
+                        return (
+                          <div className="flex items-center gap-2 py-3 px-3 rounded-lg bg-green-900/20 border border-green-800/30 text-green-300/70">
+                            <span className="text-base">✓</span>
+                            <p className="text-xs">All sensors at baseline — no active risk factors</p>
+                          </div>
+                        )
+                      }
+                      return (
+                        <>
+                          {([
+                            { label: 'Soil Moisture', color: 'bg-blue-500',   value: moisture },
+                            { label: 'Tilt / Slope',  color: 'bg-purple-500', value: tilt },
+                            { label: 'Vibration',     color: 'bg-orange-500', value: vibration },
+                          ]).map(({ label, color, value }) => (
+                            <div key={label} className="space-y-1">
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>{label}</span>
+                                <span className="font-mono">{(value * 100).toFixed(1)}%</span>
+                              </div>
+                              <div className="w-full bg-secondary/50 rounded-full h-2.5">
+                                <div
+                                  className={`${color} h-2.5 rounded-full transition-all duration-700`}
+                                  style={{ width: `${value * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </>
+                      )
+                    })()}
+
+                    {/* ML vs Linear Formula comparison */}
+                    <div className="mt-4 rounded-lg border border-border/40 bg-secondary/20 p-3 space-y-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">ML vs Formula Comparison</p>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <p className="text-muted-foreground text-[10px]">ML Score</p>
+                          <p className={`font-mono font-bold ${
+                            mlPred.riskClass === 'HIGH' ? 'text-red-400' : mlPred.riskClass === 'MEDIUM' ? 'text-orange-400' : 'text-green-400'
+                          }`}>{mlPred.riskScore.toFixed(4)}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground text-[10px]">Linear Formula</p>
+                          <p className="font-mono text-muted-foreground">{mlPred.linearScore.toFixed(4)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 pt-1 border-t border-border/30">
+                        <span className="text-[10px] text-muted-foreground">Delta:</span>
+                        <span className={`text-xs font-mono font-semibold ${
+                          mlPred.delta > 0.02 ? 'text-red-400' : mlPred.delta < -0.02 ? 'text-green-400' : 'text-muted-foreground'
+                        }`}>
+                          {mlPred.delta >= 0 ? '+' : ''}{mlPred.delta.toFixed(4)}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground ml-1">
+                          {Math.abs(mlPred.delta) > 0.02
+                            ? mlPred.delta > 0 ? '↑ ML detects higher non-linear risk' : '↓ ML sees lower actual risk'
+                            : '≈ Models agree'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Model metadata row ─────────────────────────────────── */}
+                <div className="rounded-lg border border-border/30 bg-secondary/10 px-4 py-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-muted-foreground">
+                  <div>
+                    <p className="font-semibold text-foreground/70">Architecture</p>
+                    <p className="font-mono">MLP 3→32→16→1</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground/70">Training R²</p>
+                    <p className="font-mono text-green-400">{mlPred.meta.training.r2_val?.toFixed(4) ?? '—'}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground/70">MAE</p>
+                    <p className="font-mono">{mlPred.meta.training.mae_val?.toFixed(4) ?? '—'}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground/70">Samples</p>
+                    <p className="font-mono">{mlPred.meta.training.n_samples?.toLocaleString() ?? '—'}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
