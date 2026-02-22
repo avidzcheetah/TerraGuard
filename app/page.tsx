@@ -1074,13 +1074,12 @@ export default function Dashboard() {
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-violet-500/40 bg-secondary">
-                {/* SVG fallback avatar with initials */}
-                <svg viewBox="0 0 56 56" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="28" cy="28" r="28" fill="hsl(263,55%,18%)"/>
-                  <circle cx="28" cy="23" r="9" fill="hsl(263,55%,60%)"/>
-                  <ellipse cx="28" cy="46" rx="14" ry="9" fill="hsl(263,55%,60%)"/>
-                  <text x="28" y="27" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold" fontFamily="monospace" dy="0.3em">AW</text>
-                </svg>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/avidu-witharana.jpg"
+                  alt="Avidu Witharana"
+                  className="w-full h-full object-cover"
+                />
               </div>
               {/* Ring glow */}
               <div className="absolute inset-0 rounded-full ring-2 ring-violet-500/20 ring-offset-1 ring-offset-transparent" />
@@ -1090,15 +1089,24 @@ export default function Dashboard() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">Avidu Witharana</p>
               <p className="text-xs text-muted-foreground truncate">Embedded Systems · Full-Stack Dev</p>
-              <div className="flex items-center gap-2 mt-1.5">
+              <div className="flex items-center gap-3 mt-1.5 flex-wrap">
                 <a
-                  href="https://github.com/AviduWitharana"
+                  href="https://github.com/avidzcheetah"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 transition-colors font-mono"
                 >
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                  github.com/AviduWitharana
+                  avidzcheetah
+                </a>
+                <a
+                  href="https://terraguard-zeta.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 transition-colors font-mono"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                  Live
                 </a>
               </div>
             </div>

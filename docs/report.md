@@ -242,4 +242,5 @@ arduino-cli upload  --fqbn arduino:avr:uno -p COM3 TerraGuardFirmware/
 
 **Avidu Witharana**  
 Embedded Systems & Full-Stack Developer  
-GitHub: [github.com/AviduWitharana](https://github.com/AviduWitharana)
+GitHub: [github.com/avidzcheetah](https://github.com/avidzcheetah)  
+Live: [terraguard-zeta.vercel.app](https://terraguard-zeta.vercel.app)
