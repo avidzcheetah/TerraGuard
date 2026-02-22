@@ -97,6 +97,79 @@ function buildSimulatedHistory(): { chart: ChartPoint[]; log: ActivityEntry[] } 
   return { chart, log: log.slice(0, 10) }
 }
 
+// ─── Disconnected Placeholders ────────────────────────────────────────────────
+type PlaceholderColor = 'blue' | 'orange' | 'purple'
+
+const PLACEHOLDER_COLOR_MAP: Record<PlaceholderColor, { bar: string; glow: string }> = {
+  blue:   { bar: 'bg-blue-500/20',   glow: 'bg-blue-400/10' },
+  orange: { bar: 'bg-orange-500/20', glow: 'bg-orange-400/10' },
+  purple: { bar: 'bg-purple-500/20', glow: 'bg-purple-400/10' },
+}
+
+function SensorAwaitingPlaceholder({ color, label }: { color: PlaceholderColor; label: string }) {
+  const c = PLACEHOLDER_COLOR_MAP[color]
+  return (
+    <div className="flex flex-col gap-3 animate-pulse">
+      {/* Value placeholder */}
+      <div className="flex items-end gap-2">
+        <div className="h-12 w-20 rounded-md bg-secondary/50" />
+        <div className="h-6 w-6 rounded bg-secondary/30 mb-1" />
+      </div>
+      {/* Sub-label placeholder */}
+      <div className="h-3 w-48 rounded bg-secondary/40" />
+      {/* Progress bar */}
+      <div className={`w-full ${c.glow} rounded-full h-3 relative overflow-hidden`}>
+        <div
+          className={`absolute top-0 left-0 h-full w-1/3 ${c.bar} rounded-full`}
+          style={{ animation: 'none' }}
+        />
+      </div>
+      {/* Awaiting text */}
+      <p className="text-xs text-muted-foreground/50 font-mono mt-1">
+        {label} &mdash; <span className="italic">awaiting signal…</span>
+      </p>
+    </div>
+  )
+}
+
+function ChartAwaitingPlaceholder() {
+  return (
+    <div className="flex flex-col items-center justify-center h-[180px] gap-3 select-none">
+      {/* Animated scan-line grid */}
+      <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-md bg-secondary/10 border border-border/20">
+        {/* Horizontal grid lines */}
+        {[0.2, 0.4, 0.6, 0.8].map(pos => (
+          <div
+            key={pos}
+            className="absolute w-full border-t border-border/20"
+            style={{ top: `${pos * 100}%` }}
+          />
+        ))}
+        {/* Vertical grid lines */}
+        {[0.25, 0.5, 0.75].map(pos => (
+          <div
+            key={pos}
+            className="absolute h-full border-l border-border/20"
+            style={{ left: `${pos * 100}%` }}
+          />
+        ))}
+        {/* Center content */}
+        <div className="relative z-10 flex flex-col items-center gap-2">
+          <div className="relative">
+            {/* Outer ping rings */}
+            <div className="absolute inset-0 rounded-full border border-muted-foreground/20 animate-ping" style={{ animationDuration: '2s' }} />
+            <div className="absolute inset-1 rounded-full border border-muted-foreground/10 animate-ping" style={{ animationDuration: '2.5s', animationDelay: '0.3s' }} />
+            <div className="w-8 h-8 rounded-full border border-muted-foreground/30 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-muted-foreground/40 animate-pulse" />
+            </div>
+          </div>
+          <p className="text-[10px] font-mono text-muted-foreground/50 tracking-widest uppercase">No Signal</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Chart Modal ──────────────────────────────────────────────────────────────
 interface ChartModalProps {
   isOpen: boolean
@@ -275,22 +348,14 @@ export default function Dashboard() {
     })
   }, [])
 
-  // ── Simulated data (2-second cycle, only when disconnected) ───────────────
+  // ── Reset to empty state when disconnected ───────────────────────────────
   useEffect(() => {
     if (isConnected) return
-    // Seed with historical data
-    const { chart, log } = buildSimulatedHistory()
-    setChartData(chart)
-    setActivityLog(log)
-    const r0 = simulateReading()
-    setLatest(r0)
-    setLastUpdate(nowTimeStr())
-
-    const interval = setInterval(() => {
-      applyReading(simulateReading())
-    }, 2000)
-    return () => clearInterval(interval)
-  }, [isConnected, applyReading])
+    setChartData([])
+    setActivityLog([])
+    setLatest({ moistureRaw: 0, tilt: 0, vibrationRaw: 0, Mn: 0, Tn: 0, Vn: 0, R: 0, level: 'LOW' })
+    setLastUpdate('--:--:--')
+  }, [isConnected])
 
   // ── Serial reading loop ───────────────────────────────────────────────────
   const startReadLoop = useCallback(async (port: any) => {
@@ -498,25 +563,28 @@ export default function Dashboard() {
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Droplets className="w-5 h-5 text-blue-400" />Soil Moisture
+                <Droplets className={`w-5 h-5 ${isConnected ? 'text-blue-400' : 'text-muted-foreground'}`} />Soil Moisture
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="text-5xl font-bold text-blue-400">{Math.round(Mn * 100)}</span>
-                <span className="text-xl text-blue-400 mb-1">%</span>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Raw ADC: <span className="font-mono text-foreground">{moistureRaw}</span>
-                &nbsp;·&nbsp; Normalized: <span className="font-mono text-foreground">{Mn.toFixed(2)}</span>
-              </p>
-              <div className="w-full bg-secondary/50 rounded-full h-3">
-                <div
-                  className="bg-gradient-to-r from-blue-500 to-blue-400 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${Mn * 100}%` }}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground mt-3">Mn = 0.40×Risk weight</p>
+              {isConnected ? (
+                <>
+                  <div className="flex items-end gap-2 mb-1">
+                    <span className="text-5xl font-bold text-blue-400">{Math.round(Mn * 100)}</span>
+                    <span className="text-xl text-blue-400 mb-1">%</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Raw ADC: <span className="font-mono text-foreground">{moistureRaw}</span>
+                    &nbsp;·&nbsp; Normalized: <span className="font-mono text-foreground">{Mn.toFixed(2)}</span>
+                  </p>
+                  <div className="w-full bg-secondary/50 rounded-full h-3">
+                    <div className="bg-gradient-to-r from-blue-500 to-blue-400 h-3 rounded-full transition-all duration-500" style={{ width: `${Mn * 100}%` }} />
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3">Mn = 0.40×Risk weight</p>
+                </>
+              ) : (
+                <SensorAwaitingPlaceholder color="blue" label="Mn = 0.40×Risk weight" />
+              )}
             </CardContent>
           </Card>
 
@@ -524,25 +592,28 @@ export default function Dashboard() {
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-orange-400" />Shock / Vibration
+                <Zap className={`w-5 h-5 ${isConnected ? 'text-orange-400' : 'text-muted-foreground'}`} />Shock / Vibration
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="text-5xl font-bold text-orange-400">{Math.round(Vn * 100)}</span>
-                <span className="text-xl text-orange-400 mb-1">%</span>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Raw ADC: <span className="font-mono text-foreground">{vibrationRaw}</span>
-                &nbsp;·&nbsp; Normalized: <span className="font-mono text-foreground">{Vn.toFixed(2)}</span>
-              </p>
-              <div className="w-full bg-secondary/50 rounded-full h-3">
-                <div
-                  className="bg-gradient-to-r from-orange-500 to-orange-400 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${Vn * 100}%` }}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground mt-3">Vn = 0.25×Risk weight</p>
+              {isConnected ? (
+                <>
+                  <div className="flex items-end gap-2 mb-1">
+                    <span className="text-5xl font-bold text-orange-400">{Math.round(Vn * 100)}</span>
+                    <span className="text-xl text-orange-400 mb-1">%</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Raw ADC: <span className="font-mono text-foreground">{vibrationRaw}</span>
+                    &nbsp;·&nbsp; Normalized: <span className="font-mono text-foreground">{Vn.toFixed(2)}</span>
+                  </p>
+                  <div className="w-full bg-secondary/50 rounded-full h-3">
+                    <div className="bg-gradient-to-r from-orange-500 to-orange-400 h-3 rounded-full transition-all duration-500" style={{ width: `${Vn * 100}%` }} />
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3">Vn = 0.25×Risk weight</p>
+                </>
+              ) : (
+                <SensorAwaitingPlaceholder color="orange" label="Vn = 0.25×Risk weight" />
+              )}
             </CardContent>
           </Card>
 
@@ -550,43 +621,67 @@ export default function Dashboard() {
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-purple-400" />Tilt / Movement
+                <Activity className={`w-5 h-5 ${isConnected ? 'text-purple-400' : 'text-muted-foreground'}`} />Tilt / Movement
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="text-5xl font-bold text-purple-400">{tilt.toFixed(1)}</span>
-                <span className="text-xl text-purple-400 mb-1">°</span>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Normalized: <span className="font-mono text-foreground">{Tn.toFixed(2)}</span>
-                &nbsp;·&nbsp; T<sub>max</sub> = 45°
-              </p>
-              <div className="w-full bg-secondary/50 rounded-full h-3">
-                <div
-                  className="bg-gradient-to-r from-purple-500 to-purple-400 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${Tn * 100}%` }}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground mt-3">Tn = 0.35×Risk weight</p>
+              {isConnected ? (
+                <>
+                  <div className="flex items-end gap-2 mb-1">
+                    <span className="text-5xl font-bold text-purple-400">{tilt.toFixed(1)}</span>
+                    <span className="text-xl text-purple-400 mb-1">°</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Normalized: <span className="font-mono text-foreground">{Tn.toFixed(2)}</span>
+                    &nbsp;·&nbsp; T<sub>max</sub> = 45°
+                  </p>
+                  <div className="w-full bg-secondary/50 rounded-full h-3">
+                    <div className="bg-gradient-to-r from-purple-500 to-purple-400 h-3 rounded-full transition-all duration-500" style={{ width: `${Tn * 100}%` }} />
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3">Tn = 0.35×Risk weight</p>
+                </>
+              ) : (
+                <SensorAwaitingPlaceholder color="purple" label="Tn = 0.35×Risk weight" />
+              )}
             </CardContent>
           </Card>
         </div>
 
         {/* ── Risk Level Banner ─────────────────────────────────────────────── */}
-        <div className={`${riskStyle.bg} rounded-lg p-8 mb-8 border border-current/20 shadow-lg`}>
-          <div className="flex items-start gap-4">
-            <AlertTriangle className={`w-12 h-12 ${riskStyle.icon} flex-shrink-0 mt-1`} />
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h2 className="text-2xl font-bold">Risk Level: {level}</h2>
-                <span className="font-mono text-lg opacity-75">(R = {R.toFixed(2)})</span>
+        {isConnected ? (
+          <div className={`${riskStyle.bg} rounded-lg p-8 mb-8 border border-current/20 shadow-lg`}>
+            <div className="flex items-start gap-4">
+              <AlertTriangle className={`w-12 h-12 ${riskStyle.icon} flex-shrink-0 mt-1`} />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-2xl font-bold">Risk Level: {level}</h2>
+                  <span className="font-mono text-lg opacity-75">(R = {R.toFixed(2)})</span>
+                </div>
+                <p className="text-lg opacity-90">{riskStyle.text}</p>
+                <p className="text-sm opacity-70 mt-2 font-mono">R = 0.40 × Mn + 0.35 × Tn + 0.25 × Vn = {(0.40 * Mn).toFixed(2)} + {(0.35 * Tn).toFixed(2)} + {(0.25 * Vn).toFixed(2)}</p>
               </div>
-              <p className="text-lg opacity-90">{riskStyle.text}</p>
-              <p className="text-sm opacity-70 mt-2 font-mono">R = 0.40 × Mn + 0.35 × Tn + 0.25 × Vn = {(0.40 * Mn).toFixed(2)} + {(0.35 * Tn).toFixed(2)} + {(0.25 * Vn).toFixed(2)}</p>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="rounded-lg p-8 mb-8 border border-border/30 bg-secondary/10 shadow-lg">
+            <div className="flex items-start gap-4">
+              <div className="relative flex-shrink-0 mt-1">
+                <div className="w-12 h-12 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center">
+                  <div className="w-3 h-3 rounded-full bg-muted-foreground/50 animate-pulse" />
+                </div>
+                <div className="absolute inset-0 rounded-full border border-muted-foreground/20 animate-ping" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-2xl font-bold text-muted-foreground">System Standby</h2>
+                  <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-secondary/50 text-muted-foreground border border-border/40">OFFLINE</span>
+                </div>
+                <p className="text-base text-muted-foreground opacity-80">No sensor data available. Connect your HC-05 device to begin risk assessment.</p>
+                <p className="text-sm opacity-50 mt-2 font-mono">R = 0.40 × Mn + 0.35 × Tn + 0.25 × Vn</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Sensor Trends (Normalized) ────────────────────────────────────── */}
         <div className="mb-8">
@@ -603,26 +698,30 @@ export default function Dashboard() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <CardTitle className="text-base">{label}</CardTitle>
-                      <CardDescription className="text-xs">Last 60 readings</CardDescription>
+                      <CardDescription className="text-xs">{isConnected ? 'Last 60 readings' : 'Awaiting connection'}</CardDescription>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => setExpandedChart(key)} className="h-7 w-7 hover:bg-secondary/50 flex-shrink-0">
+                    <Button variant="ghost" size="icon" onClick={() => setExpandedChart(key)} disabled={!isConnected} className="h-7 w-7 hover:bg-secondary/50 flex-shrink-0">
                       <Maximize2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 pb-3">
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(240, 10%, 18%)" />
-                      <XAxis dataKey="time" stroke="hsl(240, 5%, 75%)" tick={{ fontSize: 9 }} tickCount={5} />
-                      <YAxis stroke="hsl(240, 5%, 75%)" domain={[0, 1]} tick={{ fontSize: 11 }} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: 'hsl(240, 10%, 11%)', border: '1px solid hsl(240, 10%, 18%)', borderRadius: '0.5rem', fontSize: '12px' }}
-                        labelStyle={{ color: 'hsl(240, 5%, 95%)' }}
-                      />
-                      <Line type="monotone" dataKey={key} stroke={color} dot={false} strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  {isConnected ? (
+                    <ResponsiveContainer width="100%" height={180}>
+                      <LineChart data={chartData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(240, 10%, 18%)" />
+                        <XAxis dataKey="time" stroke="hsl(240, 5%, 75%)" tick={{ fontSize: 9 }} tickCount={5} />
+                        <YAxis stroke="hsl(240, 5%, 75%)" domain={[0, 1]} tick={{ fontSize: 11 }} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: 'hsl(240, 10%, 11%)', border: '1px solid hsl(240, 10%, 18%)', borderRadius: '0.5rem', fontSize: '12px' }}
+                          labelStyle={{ color: 'hsl(240, 5%, 95%)' }}
+                        />
+                        <Line type="monotone" dataKey={key} stroke={color} dot={false} strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <ChartAwaitingPlaceholder />
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -679,7 +778,16 @@ export default function Dashboard() {
                     </TableRow>
                   )) : (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center text-muted-foreground py-4">Loading data…</TableCell>
+                      <TableCell colSpan={9} className="py-12">
+                        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+                          <div className="relative">
+                            <Bluetooth className="w-8 h-8 opacity-30" />
+                            <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500/70" />
+                          </div>
+                          <p className="text-sm font-medium">No live data</p>
+                          <p className="text-xs opacity-60">Connect your HC-05 device to start receiving sensor readings</p>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
