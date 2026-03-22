@@ -1,0 +1,60 @@
+name: terraguard_mobile
+description: "TerraGuard Landslide Risk Monitoring System Mobile App."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.11.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Bluetooth & Serial Communication
+  flutter_bluetooth_serial:
+
+  # State Management
+  provider:
+
+  # UI & Visual
+  flutter_svg:
+  fl_chart:
+
+  # Data & Serialization
+  json_annotation:
+  freezed_annotation:
+
+  # Utilities & Helpers
+  intl:
+  uuid:
+  shared_preferences:
+  sqflite:
+  path_provider:
+
+  # Notifications & Alerts
+  flutter_local_notifications:
+  vibration:
+  audioplayers:
+
+  # Math & Scientific
+  ml_linalg:
+
+  # Environment & Platform
+  flutter_dotenv:
+  device_info_plus:
+  permission_handler:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints:
+  build_runner:
+  json_serializable:
+  freezed:
+
+flutter:
+  uses-material-design: true
+
+assets:
+  - assets/sounds/
+  - assets/ml/
