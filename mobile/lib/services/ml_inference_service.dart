@@ -129,12 +129,12 @@ class MLInferenceEngine {
   
   double _computeConfidence(double score, double lo, double hi) {
     if (score < lo) {
-      return (2 * min(score, lo - score)).clamp(0.0, 1.0);
+      return (2 * min(score, lo - score)).clamp(0.0, 1.0).toDouble();
     } else if (score < hi) {
       final mid = (lo + hi) / 2;
-      return (1 - (score - mid).abs() / ((hi - lo) / 2)).clamp(0.0, 1.0);
+      return (1 - (score - mid).abs() / ((hi - lo) / 2)).clamp(0.0, 1.0).toDouble();
     } else {
-      return (2 * min(1 - score, score - hi)).clamp(0.0, 1.0);
+      return (2 * min(1 - score, score - hi)).clamp(0.0, 1.0).toDouble();
     }
   }
 }

@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.11.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -30,6 +30,7 @@ dependencies:
   shared_preferences:
   sqflite:
   path_provider:
+  path: ^1.8.3
 
   # Notifications & Alerts
   flutter_local_notifications:

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bluetooth_provider.dart';
 import '../providers/sensor_provider.dart';
-import '../models/sensor_reading.dart';
 import '../widgets/sensor_card.dart';
 import '../widgets/risk_banner.dart';
 import '../widgets/ml_prediction_card.dart';
 import '../widgets/chart_widget.dart';
 import '../widgets/connection_modal.dart';
+import '../services/database_helper.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -35,7 +35,7 @@ class DashboardScreen extends StatelessWidget {
                         const SnackBar(content: Text('Generating CSV...')),
                       );
                       final result = await DatabaseHelper.instance.exportToCSV();
-                      if (mounted) {
+                      if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(result), duration: const Duration(seconds: 4)),
                         );
@@ -183,18 +183,6 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
             ),
-              const SizedBox(height: 16),
-
-              // We will build the ML Prediction Panel here
-              const _PlaceholderCard(title: 'AI Risk Prediction & Attribution'),
-              const SizedBox(height: 16),
-
-              // We will build the Real-time Charts here
-              const _PlaceholderCard(title: 'Real-time Charts'),
-            ],
-          ),
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.blueAccent,
               onPressed: () {
@@ -210,28 +198,4 @@ class DashboardScreen extends StatelessWidget {
             ),
     );
   }
-}
-
-// A temporary widget just to hold the space until we build the real UI components
-class _PlaceholderCard extends StatelessWidget {
-  final String title;
-  const _PlaceholderCard({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white12),
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: const TextStyle(color: Colors.white54, fontSize: 16),
-        ),
-      ),
-    );
-  }
-}
+}

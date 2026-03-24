@@ -1,0 +1,83 @@
+Analyzing mobile...
+
+  error - lib\models\sensor_reading.dart:10:7 - Missing concrete implementations of 'getter mixin _$SensorReading on Object.Mn', 'getter mixin _$SensorReading on Object.R', 'getter mixin _$SensorReading on Object.Tn', 'getter mixin _$SensorReading on Object.Vn', and 6 more. Try implementing the missing methods, or make the class abstract. - non_abstract_class_inherits_abstract_member
+  error - lib\models\sensor_reading.dart:28:7 - Missing concrete implementations of 'getter mixin _$ChartPoint on Object.Mn', 'getter mixin _$ChartPoint on Object.Tn', 'getter mixin _$ChartPoint on Object.Vn', 'getter mixin _$ChartPoint on Object.time', and 1 more. Try implementing the missing methods, or make the class abstract. - non_abstract_class_inherits_abstract_member
+  error - lib\models\sensor_reading.dart:41:7 - Missing concrete implementations of 'getter mixin _$ActivityEntry on Object.id', 'getter mixin _$ActivityEntry on Object.reading', 'getter mixin _$ActivityEntry on Object.time', and 'mixin _$ActivityEntry on Object.toJson'. Try implementing the missing methods, or make the class abstract. - non_abstract_class_inherits_abstract_member
+  error - lib\models\sensor_reading.dart:53:7 - Missing concrete implementations of 'getter mixin _$MLPrediction on Object.confidence', 'getter mixin _$MLPrediction on Object.contributions', 'getter mixin _$MLPrediction on Object.delta', 'getter mixin _$MLPrediction on Object.linearScore', and 4 more. Try implementing the missing methods, or make the class abstract. - non_abstract_class_inherits_abstract_member
+  error - lib\models\sensor_reading.dart:69:7 - Missing concrete implementations of 'getter mixin _$FeatureContributions on Object.moisture', 'getter mixin _$FeatureContributions on Object.tilt', 'getter mixin _$FeatureContributions on Object.vibration', and 'mixin _$FeatureContributions on Object.toJson'. Try implementing the missing methods, or make the class abstract. - non_abstract_class_inherits_abstract_member
+  error - lib\models\sensor_reading.dart:81:7 - Missing concrete implementations of 'getter mixin _$MLModelMeta on Object.architecture', 'getter mixin _$MLModelMeta on Object.featureNames', 'getter mixin _$MLModelMeta on Object.layers', 'getter mixin _$MLModelMeta on Object.modelVersion', and 3 more. Try implementing the missing methods, or make the class abstract. - non_abstract_class_inherits_abstract_member
+  error - lib\models\sensor_reading.dart:96:7 - Missing concrete implementations of 'getter mixin _$BluetoothDeviceModel on Object.address', 'getter mixin _$BluetoothDeviceModel on Object.isConnected', 'getter mixin _$BluetoothDeviceModel on Object.lastSeen', 'getter mixin _$BluetoothDeviceModel on Object.name', and 1 more. Try implementing the missing methods, or make the class abstract. - non_abstract_class_inherits_abstract_member
+  error - lib\screens\dashboard_screen.dart:37:44 - Undefined name 'DatabaseHelper'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\screens\dashboard_screen.dart:38:27 - Undefined name 'mounted'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\screens\dashboard_screen.dart:194:13 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:194:13 - Expected to find ')'. - expected_token
+  error - lib\screens\dashboard_screen.dart:195:11 - Expected to find ';'. - expected_token
+  error - lib\screens\dashboard_screen.dart:195:12 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:195:12 - Expected to find ';'. - expected_token
+  error - lib\screens\dashboard_screen.dart:195:12 - Unexpected text ';'. Try removing the text. - unexpected_token
+  error - lib\screens\dashboard_screen.dart:196:9 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:196:9 - Expected to find ';'. - expected_token
+  error - lib\screens\dashboard_screen.dart:196:9 - Unexpected text ';'. Try removing the text. - unexpected_token
+  error - lib\screens\dashboard_screen.dart:196:10 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:196:10 - Expected to find ';'. - expected_token
+  error - lib\screens\dashboard_screen.dart:196:10 - Unexpected text ';'. Try removing the text. - unexpected_token
+  error - lib\screens\dashboard_screen.dart:197:7 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:197:7 - Expected to find ';'. - expected_token
+  error - lib\screens\dashboard_screen.dart:197:7 - Unexpected text ';'. Try removing the text. - unexpected_token
+  error - lib\screens\dashboard_screen.dart:197:8 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:197:8 - Unexpected text ';'. Try removing the text. - unexpected_token
+  error - lib\screens\dashboard_screen.dart:210:13 - Expected to find ';'. - expected_token
+  error - lib\screens\dashboard_screen.dart:210:14 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:210:14 - Expected to find ';'. - expected_token
+  error - lib\screens\dashboard_screen.dart:210:14 - Unexpected text ';'. Try removing the text. - unexpected_token
+  error - lib\screens\dashboard_screen.dart:211:5 - Expected an identifier. - missing_identifier
+  error - lib\screens\dashboard_screen.dart:211:5 - Unexpected text ';'. Try removing the text. - unexpected_token
+  error - lib\services\ml_inference_service.dart:132:14 - A value of type 'num' can't be returned from the method '_computeConfidence' because it has a return type of 'double'. - return_of_invalid_type
+  error - lib\services\ml_inference_service.dart:137:14 - A value of type 'num' can't be returned from the method '_computeConfidence' because it has a return type of 'double'. - return_of_invalid_type
+  error - lib\services\notification_service.dart:19:32 - The named parameter 'settings' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
+  error - lib\services\notification_service.dart:19:43 - Too many positional arguments: 0 expected, but 1 found. Try removing the extra positional arguments, or specifying the name for named arguments. - extra_positional_arguments_could_be_named
+  error - lib\services\notification_service.dart:79:20 - The name 'Color' isn't a class. Try correcting the name to match an existing class. - creation_with_non_type
+  error - lib\services\notification_service.dart:85:32 - The named parameter 'id' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
+  error - lib\services\notification_service.dart:86:7 - Too many positional arguments: 0 expected, but 4 found. Try removing the extra positional arguments, or specifying the name for named arguments. - extra_positional_arguments_could_be_named
+  error - test\widget_test.dart:16:35 - The name 'MyApp' isn't a class. Try correcting the name to match an existing class. - creation_with_non_type
+warning - lib\screens\dashboard_screen.dart:195:12 - Dead code. Try removing the code, or fixing the code before it so that it can be reached. - dead_code
+warning - lib\screens\dashboard_screen.dart:198:7 - The label 'floatingActionButton' isn't used. Try removing the label, or using it in either a 'break' or 'continue' statement. - unused_label
+warning - lib\services\notification_service.dart:38:26 - The left operand can't be null, so the right operand is never executed. Try removing the operator and the right operand. - dead_null_aware_expression
+warning - lib\services\notification_service.dart:59:26 - The left operand can't be null, so the right operand is never executed. Try removing the operator and the right operand. - dead_null_aware_expression
+warning - lib\widgets\risk_banner.dart:32:7 - This default clause is covered by the previous cases. Try removing the default clause, or restructuring the preceding patterns. - unreachable_switch_default
+   info - lib\models\sensor_reading.dart:7:18 - The constant name 'LOW' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - constant_identifier_names
+   info - lib\models\sensor_reading.dart:7:23 - The constant name 'MEDIUM' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - constant_identifier_names
+   info - lib\models\sensor_reading.dart:7:31 - The constant name 'HIGH' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - constant_identifier_names
+   info - lib\models\sensor_reading.dart:13:21 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:15:21 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:17:21 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:31:21 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:32:21 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:33:21 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\providers\sensor_provider.dart:66:11 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\screens\dashboard_screen.dart:39:46 - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext. - use_build_context_synchronously
+   info - lib\screens\dashboard_screen.dart:55:42 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\screens\dashboard_screen.dart:56:40 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\screens\dashboard_screen.dart:211:6 - Unnecessary empty statement. Try removing the empty statement or restructuring the code. - empty_statements
+   info - lib\services\bluetooth_service.dart:20:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\bluetooth_service.dart:29:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\bluetooth_service.dart:62:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\database_helper.dart:3:8 - The imported package 'path' isn't a dependency of the importing package. Try adding a dependency for 'path' in the 'pubspec.yaml' file. - depend_on_referenced_packages
+   info - lib\services\ml_inference_service.dart:31:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\ml_inference_service.dart:33:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\ml_inference_service.dart:71:35 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:71:46 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:71:57 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:106:53 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:106:64 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:106:75 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\notification_service.dart:33:10 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\notification_service.dart:54:10 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\serial_parser_service.dart:31:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\widgets\chart_widget.dart:117:22 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\widgets\connection_modal.dart:56:44 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\widgets\connection_modal.dart:58:63 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\widgets\connection_modal.dart:121:51 - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext. - use_build_context_synchronously
+   info - lib\widgets\risk_banner.dart:65:53 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+
+79 issues found.

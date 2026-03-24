@@ -39,11 +39,11 @@ const _$RiskLevelEnumMap = {
 };
 
 _ChartPoint _$ChartPointFromJson(Map<String, dynamic> json) => _ChartPoint(
-  time: json['time'] as String,
-  Mn: (json['Mn'] as num).toDouble(),
-  Tn: (json['Tn'] as num).toDouble(),
-  Vn: (json['Vn'] as num).toDouble(),
-);
+      time: json['time'] as String,
+      Mn: (json['Mn'] as num).toDouble(),
+      Tn: (json['Tn'] as num).toDouble(),
+      Vn: (json['Vn'] as num).toDouble(),
+    );
 
 Map<String, dynamic> _$ChartPointToJson(_ChartPoint instance) =>
     <String, dynamic>{
@@ -73,8 +73,7 @@ _MLPrediction _$MLPredictionFromJson(Map<String, dynamic> json) =>
       riskClass: $enumDecode(_$RiskLevelEnumMap, json['riskClass']),
       confidence: (json['confidence'] as num).toDouble(),
       contributions: FeatureContributions.fromJson(
-        json['contributions'] as Map<String, dynamic>,
-      ),
+          json['contributions'] as Map<String, dynamic>),
       linearScore: (json['linearScore'] as num).toDouble(),
       delta: (json['delta'] as num).toDouble(),
       meta: MLModelMeta.fromJson(json['meta'] as Map<String, dynamic>),
@@ -92,33 +91,33 @@ Map<String, dynamic> _$MLPredictionToJson(_MLPrediction instance) =>
     };
 
 _FeatureContributions _$FeatureContributionsFromJson(
-  Map<String, dynamic> json,
-) => _FeatureContributions(
-  moisture: (json['moisture'] as num).toDouble(),
-  tilt: (json['tilt'] as num).toDouble(),
-  vibration: (json['vibration'] as num).toDouble(),
-);
+        Map<String, dynamic> json) =>
+    _FeatureContributions(
+      moisture: (json['moisture'] as num).toDouble(),
+      tilt: (json['tilt'] as num).toDouble(),
+      vibration: (json['vibration'] as num).toDouble(),
+    );
 
 Map<String, dynamic> _$FeatureContributionsToJson(
-  _FeatureContributions instance,
-) => <String, dynamic>{
-  'moisture': instance.moisture,
-  'tilt': instance.tilt,
-  'vibration': instance.vibration,
-};
+        _FeatureContributions instance) =>
+    <String, dynamic>{
+      'moisture': instance.moisture,
+      'tilt': instance.tilt,
+      'vibration': instance.vibration,
+    };
 
 _MLModelMeta _$MLModelMetaFromJson(Map<String, dynamic> json) => _MLModelMeta(
-  modelVersion: json['modelVersion'] as String,
-  architecture: json['architecture'] as Map<String, dynamic>,
-  training: json['training'] as Map<String, dynamic>,
-  thresholds: (json['thresholds'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(k, (e as num).toDouble()),
-  ),
-  featureNames: (json['featureNames'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  layers: json['layers'] as List<dynamic>,
-);
+      modelVersion: json['modelVersion'] as String,
+      architecture: json['architecture'] as Map<String, dynamic>,
+      training: json['training'] as Map<String, dynamic>,
+      thresholds: (json['thresholds'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(k, (e as num).toDouble()),
+      ),
+      featureNames: (json['featureNames'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      layers: json['layers'] as List<dynamic>,
+    );
 
 Map<String, dynamic> _$MLModelMetaToJson(_MLModelMeta instance) =>
     <String, dynamic>{

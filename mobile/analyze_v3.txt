@@ -1,0 +1,39 @@
+Analyzing mobile...
+
+  error - lib\models\sensor_reading.dart:108:1 - Expected a method, getter, setter or operator declaration. This appears to be incomplete code. Try removing it or completing it. - expected_executable
+  error - lib\screens\dashboard_screen.dart:203:3 - Expected a method, getter, setter or operator declaration. This appears to be incomplete code. Try removing it or completing it. - expected_executable
+  error - lib\screens\dashboard_screen.dart:204:1 - Expected a method, getter, setter or operator declaration. This appears to be incomplete code. Try removing it or completing it. - expected_executable
+warning - lib\widgets\risk_banner.dart:32:7 - This default clause is covered by the previous cases. Try removing the default clause, or restructuring the preceding patterns. - unreachable_switch_default
+   info - lib\models\sensor_reading.dart:7:18 - The constant name 'LOW' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - constant_identifier_names
+   info - lib\models\sensor_reading.dart:7:23 - The constant name 'MEDIUM' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - constant_identifier_names
+   info - lib\models\sensor_reading.dart:7:31 - The constant name 'HIGH' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - constant_identifier_names
+   info - lib\models\sensor_reading.dart:13:21 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:15:21 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:17:21 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:31:21 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:32:21 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\models\sensor_reading.dart:33:21 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\providers\sensor_provider.dart:66:11 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\screens\dashboard_screen.dart:55:42 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\screens\dashboard_screen.dart:56:40 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\services\bluetooth_service.dart:20:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\bluetooth_service.dart:29:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\bluetooth_service.dart:62:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\ml_inference_service.dart:31:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\ml_inference_service.dart:33:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\ml_inference_service.dart:71:35 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:71:46 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:71:57 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:106:53 - The variable name 'Mn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:106:64 - The variable name 'Tn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\ml_inference_service.dart:106:75 - The variable name 'Vn' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - lib\services\notification_service.dart:34:10 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\notification_service.dart:54:10 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\services\serial_parser_service.dart:31:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\widgets\chart_widget.dart:117:22 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\widgets\connection_modal.dart:56:44 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\widgets\connection_modal.dart:58:63 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\widgets\connection_modal.dart:121:51 - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext. - use_build_context_synchronously
+   info - lib\widgets\risk_banner.dart:65:53 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+
+35 issues found.

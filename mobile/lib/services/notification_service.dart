@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:vibration/vibration.dart';
 import '../models/sensor_reading.dart';
@@ -16,7 +17,7 @@ class NotificationService {
     const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initSettings = InitializationSettings(android: androidInit);
 
-    await _notificationsPlugin.initialize(initSettings);
+    await _notificationsPlugin.initialize(settings: initSettings);
   }
 
   static Future<void> triggerRiskAlert(RiskLevel newLevel) async {
@@ -34,8 +35,7 @@ class NotificationService {
       }
 
       // 2. Heavy Vibration Pattern (Wait 0ms, Vibrate 500ms, Wait 200ms, Vibrate 500ms)
-      bool? hasVibrator = await Vibration.hasVibrator();
-      if (hasVibrator ?? false) {
+      if (await Vibration.hasVibrator() == true) {
         Vibration.vibrate(pattern: [0, 500, 200, 500]);
       }
 
@@ -55,8 +55,7 @@ class NotificationService {
       }
 
       // 2. Single short vibration
-      bool? hasVibrator = await Vibration.hasVibrator();
-      if (hasVibrator ?? false) {
+      if (await Vibration.hasVibrator() == true) {
         Vibration.vibrate(duration: 200);
       }
 
@@ -83,10 +82,10 @@ class NotificationService {
 
     // Show the notification instantly
     await _notificationsPlugin.show(
-      DateTime.now().millisecond,
-      title,
-      body,
-      details,
+      id: DateTime.now().millisecond,
+      title: title,
+      body: body,
+      notificationDetails: details,
     );
   }
 }

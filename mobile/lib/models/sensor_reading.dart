@@ -7,7 +7,7 @@ part 'sensor_reading.g.dart';
 enum RiskLevel { LOW, MEDIUM, HIGH }
 
 @freezed
-class SensorReading with _$SensorReading {
+abstract class SensorReading with _$SensorReading {
   const factory SensorReading({
     required double moistureRaw,       // ADC 0-1023
     required double Mn,                // Normalized 0-1
@@ -25,7 +25,7 @@ class SensorReading with _$SensorReading {
 }
 
 @freezed
-class ChartPoint with _$ChartPoint {
+abstract class ChartPoint with _$ChartPoint {
   const factory ChartPoint({
     required String time,
     required double Mn,
@@ -38,7 +38,7 @@ class ChartPoint with _$ChartPoint {
 }
 
 @freezed
-class ActivityEntry with _$ActivityEntry {
+abstract class ActivityEntry with _$ActivityEntry {
   const factory ActivityEntry({
     required String id,
     required SensorReading reading,
@@ -50,7 +50,7 @@ class ActivityEntry with _$ActivityEntry {
 }
 
 @freezed
-class MLPrediction with _$MLPrediction {
+abstract class MLPrediction with _$MLPrediction {
   const factory MLPrediction({
     required double riskScore,
     required RiskLevel riskClass,
@@ -66,7 +66,7 @@ class MLPrediction with _$MLPrediction {
 }
 
 @freezed
-class FeatureContributions with _$FeatureContributions {
+abstract class FeatureContributions with _$FeatureContributions {
   const factory FeatureContributions({
     required double moisture,
     required double tilt,
@@ -78,7 +78,7 @@ class FeatureContributions with _$FeatureContributions {
 }
 
 @freezed
-class MLModelMeta with _$MLModelMeta {
+abstract class MLModelMeta with _$MLModelMeta {
   const factory MLModelMeta({
     required String modelVersion,
     required Map<String, dynamic> architecture,
@@ -93,7 +93,7 @@ class MLModelMeta with _$MLModelMeta {
 }
 
 @freezed
-class BluetoothDeviceModel with _$BluetoothDeviceModel {
+abstract class BluetoothDeviceModel with _$BluetoothDeviceModel {
   const factory BluetoothDeviceModel({
     required String address,
     required String name,
@@ -101,8 +101,8 @@ class BluetoothDeviceModel with _$BluetoothDeviceModel {
     required int rssi,
     required DateTime lastSeen,
   }) = _BluetoothDeviceModel;
-
-  // Note: BluetoothDeviceModel doesn't strictly need fromJson/toJson
-  // unless you plan to save paired devices to local storage,
-  // but we leave it out here to match your architecture doc.
 }
+
+// Note: BluetoothDeviceModel doesn't strictly need fromJson/toJson
+// unless you plan to save paired devices to local storage,
+// but we leave it out here to match your architecture doc.
